@@ -1,5 +1,11 @@
 let letters = []
 let letterSize = 60;
+let say = "";
+let utter = new SpeechSynthesisUtterance();
+utter.lang = 'en-US';
+utter.volume = 0.5;
+
+
 function setup() {
     createCanvas(600, 600);
    
@@ -10,18 +16,7 @@ function setup() {
 function draw() {
     background(50)
     frameRate(150)
-    if (keyIsPressed == true) {
-        letters.push({
-            x: mouseX,
-            y: mouseY,
-            vx: random(-1, 5),
-            vy: random(-1, 5),
-            color: random(0, 255),
-            size:  random(20, 100),
-            char: key
-        })
-
-    } 
+  
     drawLetters();
     updateLetters();
 
@@ -42,7 +37,7 @@ function updateLetters() {
         letters[l].x +=  letters[l].vx;
         letters[l].y += letters[l].vy;
 
-        if(letters[l].x <= 5 || letters[l].y <= 5 || 
+        if(letters[l].x <= 5 || letters[l].y <= letters[l].size|| 
             letters[l].x >= width-letters[l].size || letters[l].y >= height-letters[l].size ) {
            if(letters[l].size >= 5) {
             letters.push({
@@ -67,4 +62,25 @@ function updateLetters() {
             letters.splice(l, 1);
         }
     }
+}
+
+document.addEventListener('keypress', addLetter);
+
+function addLetter(e) {
+        letters.push({
+            x: mouseX,
+            y: mouseY,
+            vx: random(-1, 5),
+            vy: random(-1, 5),
+            color: random(60, 255),
+            size:  random(30, 100),
+            char: key
+        })
+
+        say += key;
+        utter.text = say
+
+        // speak
+        window.speechSynthesis.speak(utter);
+
 }
